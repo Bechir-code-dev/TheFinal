@@ -58,18 +58,20 @@ route.post("/adduser", upload.single("image") ,async (req, res) => {
       password: req.body.password,
       num: req.body.num,
       // image :req.file? `/uploads/${req.file.filename}`: null
-      image : req.body.image
+      image : req.body.image,
+      role : req.body.role
     });
     const saltRounds = 10;
     const cryptPassword = await bcrypt.hash(req.body.password, saltRounds);
     newOne.password = cryptPassword;
     await newOne.save();
-    const payload = { id: newOne.id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "24h",
-    });
 
-    res.status(200).json({ newOne, token });
+    // const payload = { id: newOne.id };
+    // const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    //   expiresIn: "24h",
+    // });
+
+    res.status(200).json({ newOne });
   } catch (error) {
     res.status(400).json({ error });
   }

@@ -1,17 +1,21 @@
-var jwt =require('jsonwebtoken');
-const {User} = require('../models/Schema');
+var jwt = require("jsonwebtoken");
+const { User } = require("../models/Schema");
 
-const auth = async(req,res,next) =>{
-  const token = req.headers["autorisation"];
-  if(!token){
-    res.send('session is not connected')
-  }else{
-    const verified = await jwt.verify(token , process.env.JWT_SECRET)
-    const user = await User.findById(verified.id)
-    if(user){
-        req.user=user;
+const auth = async (req, res, next) => {
+  try {
+    const token = req.headers["authorization"];
+    if (!token) {
+      res.send("session is not connected");
+    } else {
+      const verified = await jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(verified.id);
+      if (user) {
+        req.user = user;
         next();
+      }
     }
+  } catch (error) {
+    res.status(400).json({ msg: "invalid token" });
   }
-}
-module.exports={auth}
+};
+module.exports = { auth };

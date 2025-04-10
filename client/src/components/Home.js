@@ -7,11 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   adding_user,
   authorized,
-  logging_user,
+  log_out,
   uploadImage,
 } from "../redux/actions";
 import Button from "react-bootstrap/Button";
-import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 const customStyles = {
   content: {
@@ -34,14 +34,32 @@ const Home = () => {
   const [thepassword, setThepassword] = useState("");
   const [thefullname, setThefullname] = useState("");
   const [thenum, setThenum] = useState("");
+  const [role, setRole] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.users);
-  const { id } = useParams();
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     dispatch(authorized(token));
+  //   } else {
+  //     dispatch(log_out());
+  //   }
+  // }, [dispatch]);
 
   useEffect(() => {
     dispatch(authorized());
-  }, [dispatch, id]);
+  }, [dispatch]);
+
+  const [showLogin, setShowLogin] = useState(false);
+  useEffect(() => {
+    if (user && user.role === "admin") {
+      setShowLogin(true);
+    } else {
+      setShowLogin(false);
+    }
+  }, [user]);
 
   function openModal() {
     setIsOpen(true);
@@ -65,10 +83,11 @@ const Home = () => {
     };
     dispatch(adding_user(newOne));
     closeModal();
+    navigate("/listoftickets");
   }
 
   const logging_out = () => {
-    dispatch(logging_user());
+    dispatch(log_out());
     navigate("/");
   };
 
@@ -82,7 +101,6 @@ const Home = () => {
     formData.append("image", file);
     dispatch(uploadImage(formData));
   };
-
   return (
     <>
       <Navbar
@@ -111,6 +129,28 @@ const Home = () => {
               >
                 Home
               </Link>
+              <Link
+                to={"/listoftickets"}
+                style={{
+                  textDecoration: "none",
+                  padding: "10px",
+                  color: "green",
+                }}
+              >
+                List of Tickets
+              </Link>
+              {showLogin && (
+                <Link
+                  to={"/addTicket"}
+                  style={{
+                    textDecoration: "none",
+                    padding: "10px",
+                    color: "green",
+                  }}
+                >
+                  Add Ticket
+                </Link>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -163,17 +203,6 @@ const Home = () => {
           <></>
         )}
       </Navbar>
-      <div
-        style={{
-          backgroundImage: "url('./back2.jpg')",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          margin: 0,
-          height: "100vh",
-          color: "white",
-        }}
-      ></div>
 
       <Modal
         isOpen={modalIsOpen}
@@ -219,12 +248,25 @@ const Home = () => {
             value={thenum}
             type="number"
             onChange={(e) => setThenum(e.target.value)}
-          />
+          /><br/>
           <input
-            style={{ borderColor: "black" }}
+            style={{ borderColor: "black" , marginTop:'10px'}}
             type="file"
             onChange={handleimageupload}
           />
+          <label>Role</label>
+          <label><input style={{marginLeft:'10px'}} type="radio" name="role" defaultChecked/>Admin</label>  
+          <label><input style={{marginLeft:'10px'}} type="radio" name="role"/>User</label>
+          <br />
+
+          {showLogin && (
+            <input
+              style={{ borderColor: "black" }}
+              value={role}
+              type="text"
+              onChange={(e) => setRole(e.target.value)}
+            />
+          )}
         </form>
         <br />
         <Button
@@ -240,6 +282,16 @@ const Home = () => {
         </Button>
       </Modal>
       <Outlet />
+      {/* <iframe
+        width="1500"
+        height="650"
+        src="https://www.youtube.com/embed/UYFAYonq46I?si=mytnzHthzsToN3Y1"
+        title="Welcome To Your Matchday"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      ></iframe> */}
     </>
   );
 };

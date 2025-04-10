@@ -1,8 +1,8 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "projet final de stade pour reserver des places ",
-  "main": "index.js",
+  "description": "projet final d'une evenement pour reserver des places ",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js"

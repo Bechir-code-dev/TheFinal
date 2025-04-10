@@ -4,3 +4,5 @@ export const LOGGING_USER = "LOGGING_USER";
 export const LOG_OUT = "LOG_OUT";
 export const AUTHORIZED = "AUTHORIZED";
 export const SET_IMAGE = "SET_IMAGE";
+export const ADDING_TICKET = "ADDING_TICKET";
+export const GETTING_ALL_TICKETS = "GETTING_ALL_TICKETS";

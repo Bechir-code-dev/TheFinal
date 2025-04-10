@@ -1,7 +1,9 @@
 import axios from "axios";
 import {
+  ADDING_TICKET,
   ADDING_USER,
   AUTHORIZED,
+  GETTING_ALL_TICKETS,
   GETTING_ONE_USER,
   LOG_OUT,
   LOGGING_USER,
@@ -36,24 +38,43 @@ export const log_out = () => (dispatch) => {
   dispatch({ type: LOG_OUT });
   localStorage.clear();
   sessionStorage.clear();
-  document.cookie = '';
+   localStorage.removeItem("token");
+  document.cookie = "";
 };
-export const authorized = () =>(dispatch)=>{
+export const authorized = () => (dispatch) => {
   try {
     const config = {
-      headers : {authorisation : localStorage.getItem("token")},
+      headers: { Authorization: localStorage.getItem("token") },
     };
-    const res = axios.get("/users/auth" , config);
-    dispatch({ type: AUTHORIZED , payload : res.data});
+    const res = axios.get("/users/auth", config);
+    dispatch({ type: AUTHORIZED, payload: res.data });
   } catch (error) {
     console.error(error);
   }
 };
-export const uploadImage = (formData)=> async(dispatch)=> {
+export const uploadImage = (formData) => async (dispatch) => {
   try {
-    const res = await axios.post('users/upload', formData, {headers:{'Content-Type': 'multipart/form-data',}});
-    dispatch({type: SET_IMAGE, payload:res.data});
+    const res = await axios.post("users/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    dispatch({ type: SET_IMAGE, payload: res.data });
   } catch (error) {
     console.error("error in uploading image", error);
+  }
+};
+export const adding_ticket = (newTicket) => async (dispatch) => {
+  try {
+    const res = await axios.post("/tickets/addTicket" , newTicket);
+    dispatch({ type :ADDING_TICKET , payload:res.data});
+  } catch (error) {
+    console.error("error when you add ticket",error)
+  }
+};
+export const getting_all_tickets = () => async (dispatch) =>{
+  try {
+    const res = await axios.get("/tickets/Alltickets");
+    dispatch({ type : GETTING_ALL_TICKETS , payload: res.data});
+  } catch (error) {
+    console.error(error);
   }
 };
