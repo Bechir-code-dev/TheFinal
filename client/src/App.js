@@ -6,6 +6,8 @@ import { Routes, Route } from "react-router-dom";
 import Payment from "./components/Payment";
 import AddingTicket from "./components/AddingTicket";
 import ListofTickets from "./components/ListofTickets";
+import OneUser from "./components/OneUser";
+import ListOfUsers from "./components/ListOfUsers";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="payment" element={<Payment/>}/>
           <Route path="listoftickets" element={<ListofTickets/>}/>
           <Route path="addTicket" element={<AddingTicket/>}/>
+          <Route path= "OneUser" element={<OneUser/>}/>
+          <Route path ="ListOfUsers" element = {<ListOfUsers/>}/>
         </Route>
       </Routes>
     </div>

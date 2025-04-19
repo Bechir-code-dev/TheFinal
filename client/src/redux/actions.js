@@ -3,8 +3,10 @@ import {
   ADDING_TICKET,
   ADDING_USER,
   AUTHORIZED,
+  DELETE_TICKET,
   GETTING_ALL_TICKETS,
   GETTING_ONE_USER,
+  GETTING_USER,
   LOG_OUT,
   LOGGING_USER,
   SET_IMAGE,
@@ -36,20 +38,16 @@ export const logging_user = (user) => async (dispatch) => {
 };
 export const log_out = () => (dispatch) => {
   dispatch({ type: LOG_OUT });
-  localStorage.clear();
-  sessionStorage.clear();
-   localStorage.removeItem("token");
-  document.cookie = "";
 };
-export const authorized = () => (dispatch) => {
+export const authorized = () => async (dispatch) => {
   try {
     const config = {
       headers: { Authorization: localStorage.getItem("token") },
     };
-    const res = axios.get("/users/auth", config);
+    const res = await axios.get("/users/auth", config);
     dispatch({ type: AUTHORIZED, payload: res.data });
   } catch (error) {
-    console.error(error);
+    console.error("Error logging in user:", error.response?.data || error.message);
   }
 };
 export const uploadImage = (formData) => async (dispatch) => {
@@ -64,16 +62,32 @@ export const uploadImage = (formData) => async (dispatch) => {
 };
 export const adding_ticket = (newTicket) => async (dispatch) => {
   try {
-    const res = await axios.post("/tickets/addTicket" , newTicket);
-    dispatch({ type :ADDING_TICKET , payload:res.data});
+    const res = await axios.post("/tickets/addTicket", newTicket);
+    dispatch({ type: ADDING_TICKET, payload: res.data });
   } catch (error) {
-    console.error("error when you add ticket",error)
+    console.error("error when you add ticket", error);
   }
 };
-export const getting_all_tickets = () => async (dispatch) =>{
+export const getting_all_tickets = () => async (dispatch) => {
   try {
     const res = await axios.get("/tickets/Alltickets");
-    dispatch({ type : GETTING_ALL_TICKETS , payload: res.data});
+    dispatch({ type: GETTING_ALL_TICKETS, payload: res.data });
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const getting_user = () => async (dispatch) => {
+  try {
+    const res = await axios.get(`/users/getUsers`);
+    dispatch({ type: GETTING_USER, payload: res.data.allUsers }); 
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const delete_ticket = (_id) => async (dispatch) => {
+  try {
+    const res = await axios.delete(`/tickets/deleting/${_id}`);
+    dispatch({ type: DELETE_TICKET, payload: res.data });
   } catch (error) {
     console.error(error);
   }

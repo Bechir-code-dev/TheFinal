@@ -6,3 +6,5 @@ export const AUTHORIZED = "AUTHORIZED";
 export const SET_IMAGE = "SET_IMAGE";
 export const ADDING_TICKET = "ADDING_TICKET";
 export const GETTING_ALL_TICKETS = "GETTING_ALL_TICKETS";
+export const GETTING_USER= "GETTING_USER";
+export const DELETE_TICKET = "DELETE_TICKET";

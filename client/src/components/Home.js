@@ -3,6 +3,7 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Modal from "react-modal";
+import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import {
   adding_user,
@@ -11,8 +12,7 @@ import {
   uploadImage,
 } from "../redux/actions";
 import Button from "react-bootstrap/Button";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 const customStyles = {
   content: {
     top: "50%",
@@ -37,22 +37,22 @@ const Home = () => {
   const [role, setRole] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const user = useSelector((state) => state.users);
+  const [showLogin, setShowLogin] = useState(false);
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     dispatch(authorized(token));
-  //   } else {
-  //     dispatch(log_out());
-  //   }
-  // }, [dispatch]);
+  const isOnHome = location.pathname === "/";
 
   useEffect(() => {
     dispatch(authorized());
   }, [dispatch]);
 
-  const [showLogin, setShowLogin] = useState(false);
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+  });
+
   useEffect(() => {
     if (user && user.role === "admin") {
       setShowLogin(true);
@@ -80,6 +80,7 @@ const Home = () => {
       num: thenum,
       fullname: thefullname,
       image: image,
+      role: role,
     };
     dispatch(adding_user(newOne));
     closeModal();
@@ -101,6 +102,7 @@ const Home = () => {
     formData.append("image", file);
     dispatch(uploadImage(formData));
   };
+
   return (
     <>
       <Navbar
@@ -129,6 +131,18 @@ const Home = () => {
               >
                 Home
               </Link>
+              {showLogin && (
+                <Link
+                  to={`/ListOfUsers`}
+                  style={{
+                    textDecoration: "none",
+                    padding: "10px",
+                    color: "green",
+                  }}
+                >
+                  List Of Users
+                </Link>
+              )}
               <Link
                 to={"/listoftickets"}
                 style={{
@@ -158,10 +172,8 @@ const Home = () => {
           <span style={{ color: "black" }}> Welcome {user.fullname} </span>
         )} */}
         {user ? (
-          <span>
-            {" "}
-            <span style={{ color: "black", marginRight: "10px" }}>
-              {" "}
+          <>
+            <span style={{ color: "green", marginRight: "10px"}}>
               Welcome {user.fullname} !
             </span>
             <button
@@ -170,40 +182,44 @@ const Home = () => {
                 borderRadius: "5px",
                 backgroundColor: "white",
                 marginLeft: "7px",
+                marginRight:'10px'
               }}
             >
-              Log out
+              LogOut
             </button>
-          </span>
+            <Link to={`/OneUser`}>
+              <img
+                src={user.image}
+                alt="userImage"
+                style={{ borderRadius: "50%", marginRight:'10px' }}
+              />
+            </Link>
+          </>
         ) : (
-          <button
-            style={{
-              borderRadius: "5px",
-              backgroundColor: "white",
-              margin: "auto",
-            }}
-            onClick={go_log}
-          >
-            Login
-          </button>
-        )}
-
-        {!user ? (
-          <button
-            onClick={openModal}
-            style={{
-              borderRadius: "5px",
-              backgroundColor: "white",
-              margin: "auto",
-            }}
-          >
-            Sign in
-          </button>
-        ) : (
-          <></>
+          <>
+            <button
+              onClick={openModal}
+              style={{
+                borderRadius: "5px",
+                backgroundColor: "white",
+                margin: "auto",
+              }}
+            >
+              Sign in
+            </button>
+            <button
+              style={{
+                borderRadius: "5px",
+                backgroundColor: "white",
+                margin: "auto",
+              }}
+              onClick={go_log}
+            >
+              Login
+            </button>
+          </>
         )}
       </Navbar>
-
       <Modal
         isOpen={modalIsOpen}
         onAfterOpen={afterOpenModal}
@@ -248,17 +264,36 @@ const Home = () => {
             value={thenum}
             type="number"
             onChange={(e) => setThenum(e.target.value)}
-          /><br/>
+          />
+          <br />
           <input
-            style={{ borderColor: "black" , marginTop:'10px'}}
+            style={{ borderColor: "black", marginTop: "10px" }}
             type="file"
             onChange={handleimageupload}
           />
-          <label>Role</label>
-          <label><input style={{marginLeft:'10px'}} type="radio" name="role" defaultChecked/>Admin</label>  
-          <label><input style={{marginLeft:'10px'}} type="radio" name="role"/>User</label>
           <br />
-
+          {showLogin && (
+            <>
+              <label>Role</label>
+              <label>
+                <input
+                  style={{ marginLeft: "10px" }}
+                  type="radio"
+                  name="role"
+                  defaultChecked
+                />
+                Admin
+              </label>
+              <label>
+                <input
+                  style={{ marginLeft: "10px" }}
+                  type="radio"
+                  name="role"
+                />
+                User
+              </label>
+            </>
+          )}
           {showLogin && (
             <input
               style={{ borderColor: "black" }}
@@ -281,17 +316,100 @@ const Home = () => {
           Close
         </Button>
       </Modal>
-      <Outlet />
-      {/* <iframe
-        width="1500"
-        height="650"
-        src="https://www.youtube.com/embed/UYFAYonq46I?si=mytnzHthzsToN3Y1"
-        title="Welcome To Your Matchday"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allowfullscreen
-      ></iframe> */}
+      {isOnHome ? (
+        <section
+          style={{
+            backgroundImage:
+              "url('https://fr.reformsports.com/oachoata/2022/09/image-FEn7ype9G-transformed.jpeg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            height: "94.3vh",
+            position: "relative",
+            color: "white",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+            }}
+          />
+          <div
+            style={{
+              position: "relative",
+              zIndex: 2,
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              padding: "0 1rem",
+            }}
+          >
+            <motion.h1
+              initial={{ opacity: 0, y: -40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              style={{
+                fontSize: "2.5rem",
+                fontWeight: "bold",
+                marginBottom: "1rem",
+              }}
+            >
+              Experience the Event Like Never Before
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 1 }}
+              style={{
+                fontSize: "1.25rem",
+                maxWidth: "600px",
+                marginBottom: "2rem",
+              }}
+            >
+              Choose your perfect seat and enjoy the view – all from your
+              screen.
+            </motion.p>
+
+            <motion.button
+              onClick={() => navigate("/login")}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              style={{
+                padding: "0.75rem 1.5rem",
+                backgroundColor: "#007bff",
+                color: "white",
+                border: "none",
+                borderRadius: "10px",
+                fontWeight: "bold",
+                fontSize: "1rem",
+                cursor: "pointer",
+              }}
+            >
+              Book Your Seat Now
+            </motion.button>
+          </div>
+        </section>
+      ) : (
+        <Outlet />
+      )}
+
+      {/* {isOnHome ? (
+        <img
+          style={{ width: "100%" }}
+          src="https://fr.reformsports.com/oachoata/2022/09/image-FEn7ype9G-transformed.jpeg"
+          alt="homeImage"
+        />
+      ) : (
+        <Outlet />
+      )} */}
     </>
   );
 };

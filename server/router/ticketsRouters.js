@@ -8,8 +8,7 @@ route.post("/addTicket", async (req, res) => {
       user_fullname: req.body.user_fullname,
       seates_zone: req.body.seates_zone,
       totalprice: req.body.totalprice,
-      bookingdate: req.body.bookingdate,
-      status: req.body.status,
+      bookingdate: req.body.bookingdate
     });
     await newTicket.save();
     res.status(200).json({ newTicket });
@@ -40,7 +39,6 @@ route.put("/UpdatingTicket/:id", async (req, res) => {
       seates_zone: req.body.seates_zone,
       totalprice: req.body.totalprice,
       bookingdate: req.body.bookingdate,
-      status: req.body.status,
     };
     const UpdatedTicket = await Ticket.findByIdAndUpdate(
       req.params.id,

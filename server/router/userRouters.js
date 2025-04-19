@@ -140,5 +140,13 @@ route.put("/updateUser/:id", async (req, res) => {
     res.status(400).json({ error });
   }
 });
+route.get("/getUsers", async (req, res) => {
+  try {
+    const allUsers = await User.find();
+    res.status(200).json({ allUsers });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+});
 
 module.exports = route;

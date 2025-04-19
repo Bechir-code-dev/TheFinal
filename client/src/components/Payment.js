@@ -1,119 +1,147 @@
-import React from "react";
-import Modal from "react-modal";
+import React, { useState } from "react";
+import Button from "react-bootstrap/Button";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { delete_ticket } from "../redux/actions";
 
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
-Modal.setAppElement("#root");
 
 const Payment = () => {
-  let subtitle;
-  const [modalIsOpen, setIsOpen] = React.useState(false);
 
-  function openModal() {
-    setIsOpen(true);
-  }
 
-  function afterOpenModal() {
-    subtitle.style.color = "#f00";
-  }
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [newCards,setNewCards]=useState("");
+  const [numberCard , setnumberCard]=useState("");
+  const [dateCard , setDateCard]=useState("");
+  const [yearCard, setYearCard] = useState("");
+  const [cvv, setCvv] = useState("");
 
-  function closeModal() {
-    setIsOpen(false);
-  }
+
+  const canceling_payment = () => {
+    navigate("/listoftickets");
+  };
+
+  const validateOrder = (e) =>{
+    e.preventDefault();
+   if (!newCards || !numberCard || !dateCard || !yearCard || !cvv){
+    alert('You must fill in all the inputs')
+   }else{
+    alert('Order Validated Successfully')
+   }
+   dispatch(delete_ticket());
+  };
+
   return (
     <>
-      <section>
-        <h2 style={{ textDecoration: "underline" }}>
-          1-Informations personnelles
-        </h2>
-        <br />
-        <p style={{ marginLeft: "-500px" }}>Titre</p>
-        <form>
-          <label>
-            <input type="radio" name="option" checked />M
-          </label>
-          <label>
-            <input type="radio" name="option" />
-            Mme
-          </label>
-          <br />
-          <br />
-          <label>Prénom :</label>
-          <input
-            style={{ marginBottom: "10px" }}
-            placeholder="Entrer votre Prénom"
-          />
-          <br />
-          <label>Nom :</label>
-          <input
-            style={{ marginBottom: "10px" }}
-            placeholder="Entrer votre Nom"
-          />
-          <br />
-          <label>Téléphone :</label>
-          <input
-            style={{ marginBottom: "10px" }}
-            placeholder="Entrer votre Téléphone"
-          />
-          <br />
-          <label>E-mail :</label>
-          <input
-            style={{ marginBottom: "10px" }}
-            placeholder="Entrer votre e-mail"
-          />
-          <br />
-          <p style={{ marginLeft: "-200px", fontWeight: "bold" }}>
-            Créez votre compte (optionnel)
-          </p>
-          <button
-            style={{ marginLeft: "500px" }}
-            class="btn btn-secondary"
-            onClick={openModal}
-          >
-            Creation de compte
-          </button>
-          <br />
-
-          <label>Date de naissance :</label>
-          <input style={{ marginBottom: "10px" }} placeholder="DD/MM/YYYY" />
-          <br />
-          <span>(Ex. : 31/05/1970)</span>
-          <footer class="form-footer clearfix">
-            <input type="hidden" name="submitCreate" value="1" />
-
-            <button
-              class="btn btn-primary"
-              type="submit"
-              style={{ marginLeft: "700px" }}
-            >
-              Continue
-            </button>
-          </footer>
-        </form>
-      </section>
-      <Modal
-        isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-        style={customStyles}
-        contentLabel="Example Modal"
+     <div
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1605902711622-cfb43c4437e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        padding: "40px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <form
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          padding: "30px 50px",
+          borderRadius: "15px",
+          boxShadow: "0px 0px 15px rgba(0,0,0,0.2)",
+          width: "100%",
+          maxWidth: "600px",
+        }}
       >
-        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2>
-        <form>
-          <input />
-          <button>tab navigation</button>
-          <button>stays</button>
-          <button onClick={closeModal}>Close</button>
-        </form>
-      </Modal>
+        <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Payment</h1>
+        <hr />
+        <label style={{ marginRight: "20px" }}>Card Type</label>
+        <input
+          type="radio"
+          name="radio"
+          value="visa"
+          onChange={(e) => setNewCards(e.target.value)}
+        />
+        <img src="/visa.png" alt="visa" style={{ width: "50px", margin: "0 10px" }} />
+        <input
+          type="radio"
+          name="radio"
+          value="mastercard"
+          onChange={(e) => setNewCards(e.target.value)}
+        />
+        <img src="/mastercard.png" alt="mastercard" style={{ width: "50px" }} />
+        <br />
+        <br />
+        <label>Card Number</label>
+        <input
+          type="text"
+          placeholder="Your card number"
+          style={{ width: "100%", marginTop: "10px", padding: "8px" }}
+          onChange={(e) => setnumberCard(e.target.value)}
+        />
+        <br />
+        <br />
+        <label>Expiry Date</label>
+        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+          <select
+            style={{ flex: 1, padding: "8px" }}
+            onChange={(e) => setDateCard(e.target.value)}
+          >
+            <option value="">Month</option>
+            {[
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December",
+            ].map((month, index) => (
+              <option key={index} value={month}>
+                {month}
+              </option>
+            ))}
+          </select>
+          <input
+            type="text"
+            placeholder="Year"
+            style={{ flex: 1, padding: "8px" }}
+            onChange={(e) => setYearCard(e.target.value)}
+          />
+        </div>
+        <br />
+        <label>CVV</label><br/>
+        <input
+          type="password"
+          placeholder="ex: 123"
+          maxLength={3}
+          style={{ width: "100px", marginTop: "10px", padding: "8px" }}
+          onChange={(e) => setCvv(e.target.value)}
+        />
+        <br />
+        <div style={{ marginTop: "30px", textAlign: "center" }}>
+          <Button
+            onClick={validateOrder}
+            variant="outline-primary"
+            style={{ marginRight: "20px" }}
+          >
+            Validate Order
+          </Button>
+          <Button variant="outline-danger" onClick={canceling_payment}>
+            Cancel
+          </Button>
+        </div>
+      </form>
+    </div>
+
     </>
   );
 };
