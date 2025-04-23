@@ -47,7 +47,10 @@ export const authorized = () => async (dispatch) => {
     const res = await axios.get("/users/auth", config);
     dispatch({ type: AUTHORIZED, payload: res.data });
   } catch (error) {
-    console.error("Error logging in user:", error.response?.data || error.message);
+    console.error(
+      "Error logging in user:",
+      error.response?.data || error.message
+    );
   }
 };
 export const uploadImage = (formData) => async (dispatch) => {
@@ -79,7 +82,7 @@ export const getting_all_tickets = () => async (dispatch) => {
 export const getting_user = () => async (dispatch) => {
   try {
     const res = await axios.get(`/users/getUsers`);
-    dispatch({ type: GETTING_USER, payload: res.data.allUsers }); 
+    dispatch({ type: GETTING_USER, payload: res.data.allUsers });
   } catch (error) {
     console.error(error);
   }

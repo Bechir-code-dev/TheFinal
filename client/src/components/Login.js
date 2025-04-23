@@ -3,8 +3,7 @@ import { useDispatch } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { logging_user } from "../redux/actions";
 import Modal from "react-modal";
-import Button from 'react-bootstrap/Button';
-
+import Button from "react-bootstrap/Button";
 
 const customStyles = {
   content: {
@@ -37,9 +36,7 @@ const Login = () => {
     };
     dispatch(logging_user(user));
     navigate("/listoftickets");
-    
   };
-
 
   const [modalIsOpen, setIsOpen] = React.useState(false);
 
@@ -58,7 +55,7 @@ const Login = () => {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <h2 style={{textDecorationColor:'darkgrey'}}>LOG IN YOUR ACCOUNT</h2>
+        <h2 style={{ textDecorationColor: "darkgrey" }}>LOG IN YOUR ACCOUNT</h2>
         <form>
           <label>Your Email : </label>
           <input
@@ -83,7 +80,11 @@ const Login = () => {
           <Button
             variant="success"
             type="submit"
-            style={{ marginRight: "5px", borderRadius: "5px", marginLeft:'70px' }}
+            style={{
+              marginRight: "5px",
+              borderRadius: "5px",
+              marginLeft: "70px",
+            }}
             onClick={log_in}
           >
             Confirm
@@ -97,16 +98,21 @@ const Login = () => {
           </Button>
         </form>
       </Modal>
-      {isOnLogin?(<section
-      style={{backgroundImage:"url(https://t4.ftcdn.net/jpg/04/60/71/01/360_F_460710131_YkD6NsivdyYsHupNvO3Y8MPEwxTAhORh.jpg)",
-        backgroundSize:"cover",
-        backgroundPosition:"center",
-        height: "94.3vh",
-        position: "relative",
-        color: "white",
-      }}
-      >
-      </section>):(<Outlet/>)}
+      {isOnLogin ? (
+        <section
+          style={{
+            backgroundImage:
+              "url(https://t4.ftcdn.net/jpg/04/60/71/01/360_F_460710131_YkD6NsivdyYsHupNvO3Y8MPEwxTAhORh.jpg)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            height: "94.3vh",
+            position: "relative",
+            color: "white",
+          }}
+        ></section>
+      ) : (
+        <Outlet />
+      )}
     </>
   );
 };

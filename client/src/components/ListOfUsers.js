@@ -15,20 +15,20 @@ const ListOfUsers = () => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
     }
-  },[user]);
+  }, [user]);
 
   return (
     <>
       {Array.isArray(user) &&
         user.map((Element) => <OneUser key={Element._id} {...Element} />)}
 
-        {/* {user && !Array.isArray(user) && <OneUser key={user._id} {...user} />} */}
+      {/* {user && !Array.isArray(user) && <OneUser key={user._id} {...user} />} */}
 
-        {/* {user && !Array.isArray(user) && [user].map((Element) => (
+      {/* {user && !Array.isArray(user) && [user].map((Element) => (
   <OneUser key={Element._id} {...Element} />
 ))} */}
 
-{/* {Array.isArray(user) &&
+      {/* {Array.isArray(user) &&
   user.map((Element) => (
     <OneUser
       key={Element._id}
@@ -38,7 +38,6 @@ const ListOfUsers = () => {
       image={Element.image}
     />
   ))} */}
-
     </>
   );
 };

@@ -4,8 +4,8 @@ const { User } = require("../models/Schema");
 const { auth } = require("../middleware/auth");
 var jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const multer = require('multer')
-const fs = require('fs')
+const multer = require("multer");
+const fs = require("fs");
 const path = require("path");
 
 const storage = multer.diskStorage({
@@ -30,18 +30,18 @@ route.get("/images/:userId", async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({error:"user not found"});
+      return res.status(404).json({ error: "user not found" });
     }
     if (!user.image) {
-      return res.status(404).json({error:"user does not have an image"});
+      return res.status(404).json({ error: "user does not have an image" });
     }
-    const filePath = path.join(__dirname,"..",user.image);
+    const filePath = path.join(__dirname, "..", user.image);
     console.log("Resolved File Path:", filePath);
     console.log("File Exists:", fs.existsSync(filePath));
     if (fs.existsSync(filePath)) {
       res.sendFile(filePath);
     } else {
-      res.status(404).json({error:"Image not found"});
+      res.status(404).json({ error: "Image not found" });
     }
   } catch (err) {
     console.error(err);
@@ -49,8 +49,7 @@ route.get("/images/:userId", async (req, res) => {
   }
 });
 
-
-route.post("/adduser", upload.single("image") ,async (req, res) => {
+route.post("/adduser", upload.single("image"), async (req, res) => {
   try {
     const newOne = new User({
       fullname: req.body.fullname,
@@ -58,8 +57,8 @@ route.post("/adduser", upload.single("image") ,async (req, res) => {
       password: req.body.password,
       num: req.body.num,
       // image :req.file? `/uploads/${req.file.filename}`: null
-      image : req.body.image,
-      role : req.body.role
+      image: req.body.image,
+      role: req.body.role,
     });
     const saltRounds = 10;
     const cryptPassword = await bcrypt.hash(req.body.password, saltRounds);

@@ -8,7 +8,7 @@ route.post("/addTicket", async (req, res) => {
       user_fullname: req.body.user_fullname,
       seates_zone: req.body.seates_zone,
       totalprice: req.body.totalprice,
-      bookingdate: req.body.bookingdate
+      bookingdate: req.body.bookingdate,
     });
     await newTicket.save();
     res.status(200).json({ newTicket });
@@ -50,12 +50,12 @@ route.put("/UpdatingTicket/:id", async (req, res) => {
     res.status(400).json({ error });
   }
 });
-route.delete('/deleting/:id' , async(req , res)=>{
+route.delete("/deleting/:id", async (req, res) => {
   try {
     const deleted = await Ticket.findByIdAndDelete(req.params.id);
-    res.status(200).json({deleted});
+    res.status(200).json({ deleted });
   } catch (error) {
-    res.status(400).json({error});
+    res.status(400).json({ error });
   }
 });
 module.exports = route;

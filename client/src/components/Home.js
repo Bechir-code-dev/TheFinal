@@ -14,14 +14,23 @@ import {
 import Button from "react-bootstrap/Button";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 const customStyles = {
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 1000, 
+  },
   content: {
-    top: "50%",
+    zIndex: 1001,
+    top: "10%",
     left: "50%",
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
+    transform: "translate(-50%, 0)",
     width: "50%",
+    position: "fixed", 
+    padding: "2rem",
+    backgroundColor: "white",
+    borderRadius: "10px",
   },
 };
 
@@ -220,46 +229,61 @@ const Home = () => {
           </>
         )}
       </Navbar>
+
       <Modal
-        isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-        style={customStyles}
-        contentLabel="Example Modal"
-      >
-        <h1 ref={(_subtitle) => (subtitle = _subtitle)}>Sign in</h1>
+  isOpen={modalIsOpen}
+  onRequestClose={closeModal}
+  onAfterOpen={afterOpenModal}
+  style={customStyles}
+  // style={{ overlay: { backgroundColor: "rgba(0,0,0,0.5)" }, content: { padding: 0, border: "none", background: "none" }, height:"30%" }}
+  contentLabel="Sign In Modal"
+>
+  {/* <motion.div
+    initial={{ y: -100, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    exit={{ y: -100, opacity: 0 }}
+    transition={{ duration: 0.5 }}
+    style={{
+      background: "white",
+      margin: "auto",
+      padding: "2rem",
+      borderRadius: "10px",
+      maxWidth: "500px",
+      boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
+    }}
+  > */}
+  <h1 ref={(_subtitle) => (subtitle = _subtitle)} style={{textAlign:'center'}}>Sign in</h1>
         <br />
         <form>
-          <label>Your FullName</label>
-          <br />
+        <label>Name </label>
           <input
-            style={{ borderColor: "black" }}
+            placeholder="Your Name"
+            style={{ borderColor: "black", marginRight:'30px' }}
             value={thefullname}
             type="text"
             onChange={(e) => setThefullname(e.target.value)}
           />
-          <br />
-          <label>Your Email</label>
-          <br />
+          <label>E-mail </label>
           <input
+            placeholder="Your E-mail"
             style={{ borderColor: "black" }}
             value={theemail}
             type="text"
             onChange={(e) => setTheemail(e.target.value)}
           />
           <br />
-          <label>Your Password</label>
           <br />
+          <label>Password </label>
           <input
-            style={{ borderColor: "black" }}
+            placeholder="Your password"
+            style={{ borderColor: "black", marginRight:'30px' }}
             value={thepassword}
             type="password"
             onChange={(e) => setThepassword(e.target.value)}
           />
-          <br />
-          <label>Your Num</label>
-          <br />
+          <label>Phone Number </label>
           <input
+            placeholder="Your PhoneNumber"
             style={{ borderColor: "black" }}
             value={thenum}
             type="number"
@@ -302,20 +326,25 @@ const Home = () => {
               onChange={(e) => setRole(e.target.value)}
             />
           )}
-        </form>
-        <br />
-        <Button
+</form>
+<Button
           onClick={submit_user}
           variant="outline-primary"
           type="submit"
-          style={{ marginRight: "5px" }}
+          style={{ marginRight: "5px" , marginTop:'10px'}}
         >
           Submit
         </Button>
-        <Button onClick={closeModal} variant="outline-danger">
+        <Button 
+        onClick={closeModal} variant="outline-danger"
+        style={{ marginRight: "5px" , marginTop:'10px'}}
+        >
           Close
         </Button>
-      </Modal>
+
+  {/* </motion.div> */}
+</Modal>
+
       {isOnHome ? (
         <section
           style={{
@@ -356,6 +385,7 @@ const Home = () => {
                 fontSize: "2.5rem",
                 fontWeight: "bold",
                 marginBottom: "1rem",
+                marginTop:"200px"
               }}
             >
               Experience the Event Like Never Before

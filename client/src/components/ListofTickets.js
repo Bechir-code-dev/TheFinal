@@ -4,12 +4,11 @@ import { getting_all_tickets } from "../redux/actions";
 import Ticket from "./Ticket";
 import { Outlet, useLocation } from "react-router-dom";
 
-
 const ListofTickets = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const tickets = useSelector((state) => state.tickets);
-  const isonListofTickets = location.pathname === '/listoftickets';
+  const isonListofTickets = location.pathname === "/listoftickets";
 
   useEffect(() => {
     dispatch(getting_all_tickets());
@@ -17,7 +16,7 @@ const ListofTickets = () => {
 
   return (
     <>
-    {isonListofTickets ? (
+      {isonListofTickets ? (
         <div
           style={{
             backgroundImage:
@@ -30,13 +29,13 @@ const ListofTickets = () => {
           }}
         >
           <div
-            // style={{
-            //   backgroundColor: "rgba(255, 255, 255, 0.85)",
-            //   padding: "30px",
-            //   borderRadius: "15px",
-            //   maxWidth: "1200px",
-            //   margin: "0 auto",
-            // }}
+          // style={{
+          //   backgroundColor: "rgba(255, 255, 255, 0.85)",
+          //   padding: "30px",
+          //   borderRadius: "15px",
+          //   maxWidth: "1200px",
+          //   margin: "0 auto",
+          // }}
           >
             <h1
               style={{
@@ -53,33 +52,32 @@ const ListofTickets = () => {
               Welcome to Your Ultimate Matchday Experience
             </h1>
             <div
-        style={{
-          display: "flex",
-          // gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-          // gap: "none",
-          // padding: "0 10px",
-          marginRight:'30px',
-          justifyContent:'space-around',
-          flexDirection:'row',
-          flexWrap:'wrap'
-        }}
-      >
-        {Array.isArray(tickets) &&
-          tickets.map((ticket) => (
-            <Ticket key={ticket._id} {...ticket} />
-          ))}
-   
-            {/* {Array.isArray(tickets) &&
+              style={{
+                display: "flex",
+                // gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                // gap: "none",
+                // padding: "0 10px",
+                marginRight: "30px",
+                justifyContent: "space-around",
+                flexDirection: "row",
+                flexWrap: "wrap",
+              }}
+            >
+              {Array.isArray(tickets) &&
+                tickets.map((ticket) => (
+                  <Ticket key={ticket._id} {...ticket} />
+                ))}
+
+              {/* {Array.isArray(tickets) &&
               tickets.map((Element) => (
                 <Ticket key={Element._id} {...Element} />
               ))} */}
+            </div>
           </div>
-        </div>
         </div>
       ) : (
         <Outlet />
       )}
-     
     </>
   );
 };

@@ -44,14 +44,21 @@ const reducer = (state = initialState, action) => {
     case SET_IMAGE:
       return { ...state, image: action.payload };
     case ADDING_TICKET:
-      return { ...state, tickets: [...state.tickets, action.payload.newTicket] };
+      return {
+        ...state,
+        tickets: [...state.tickets, action.payload.newTicket],
+      };
     case GETTING_ALL_TICKETS:
       return { ...state, tickets: action.payload.tickets };
     case GETTING_USER:
       return { ...state, users: action.payload };
     case DELETE_TICKET:
-      return { ...state, 
-        tickets: state.tickets.filter((ticket) => ticket._id !== action.payload)}
+      return {
+        ...state,
+        tickets: state.tickets.filter(
+          (ticket) => ticket._id !== action.payload
+        ),
+      };
     default:
       return state;
   }
