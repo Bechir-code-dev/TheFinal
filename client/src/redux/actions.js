@@ -6,10 +6,16 @@ import {
   DELETE_TICKET,
   GETTING_ALL_TICKETS,
   GETTING_ONE_USER,
-  GETTING_USER,
+  GETTING_USERS,
   LOG_OUT,
   LOGGING_USER,
   SET_IMAGE,
+  UPDATING_USER,
+  ADDING_TO_ACHAT,
+  OPEN_SIGNIN_MODAL,
+  CLOSE_SIGNIN_MODAL,
+  GETTING_ALL_EVENTS,
+  ADDING_EVENT,
 } from "./actionTypes";
 
 export const adding_user = (newOne) => async (dispatch) => {
@@ -65,24 +71,28 @@ export const uploadImage = (formData) => async (dispatch) => {
 };
 export const adding_ticket = (newTicket) => async (dispatch) => {
   try {
-    const res = await axios.post("/tickets/addTicket", newTicket);
-    dispatch({ type: ADDING_TICKET, payload: res.data });
+    const res = await axios.post("/tickets/addTicket", {
+      seates_zone: newTicket.place,
+      totalprice: newTicket.price,
+      quantity: newTicket.quantity,
+    });
+    dispatch({ type: ADDING_TICKET, payload: res.data.newTicket });
   } catch (error) {
     console.error("error when you add ticket", error);
   }
 };
 export const getting_all_tickets = () => async (dispatch) => {
   try {
-    const res = await axios.get("/tickets/Alltickets");
-    dispatch({ type: GETTING_ALL_TICKETS, payload: res.data });
+    const res = await axios.get("/tickets/getAlltickets");
+    dispatch({ type: GETTING_ALL_TICKETS, payload: res.data.Alltickets });
   } catch (error) {
     console.error(error);
   }
 };
-export const getting_user = () => async (dispatch) => {
+export const getting_users = () => async (dispatch) => {
   try {
     const res = await axios.get(`/users/getUsers`);
-    dispatch({ type: GETTING_USER, payload: res.data.allUsers });
+    dispatch({ type: GETTING_USERS, payload: res.data.allUsers });
   } catch (error) {
     console.error(error);
   }
@@ -91,6 +101,48 @@ export const delete_ticket = (_id) => async (dispatch) => {
   try {
     const res = await axios.delete(`/tickets/deleting/${_id}`);
     dispatch({ type: DELETE_TICKET, payload: res.data });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const updating_user = (id, NewUpdated) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/users/updateUser/${id}`, NewUpdated);
+    dispatch({ type: UPDATING_USER, payload: res.data.NewUpdated });
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const adding_to_achat = (achatData) => async (dispatch) => {
+  try {
+    const res = await axios.post(`/achats/addAchat`, achatData);
+    dispatch({ type: ADDING_TO_ACHAT, payload: res.data });
+  } catch (error) {
+    console.error("Error while adding to achat:", error);
+  }
+};
+
+export const openSigninModal = () => ({
+  type: OPEN_SIGNIN_MODAL,
+});
+
+export const closeSigninModal = () => ({
+  type: CLOSE_SIGNIN_MODAL,
+});
+export const adding_event = (newEvent) => async (dispatch) => {
+  try {
+    const res = await axios.post("/events/addEvent", newEvent);
+    console.log("Response from API:", res);
+    dispatch({ type: ADDING_EVENT, payload: res.data });
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const getting_all_events = () => async (dispatch) => {
+  try {
+    const res = await axios.get("/events/getAllEvents");
+    dispatch({ type: GETTING_ALL_EVENTS, payload: res.data.AllEvents });
   } catch (error) {
     console.error(error);
   }

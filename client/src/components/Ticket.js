@@ -3,12 +3,13 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 
-const Ticket = ({ seates_zone, totalprice, bookingdate, user_fullname }) => {
+const Ticket = ({_id, seates_zone, totalprice, quantity }) => {
   const navigate = useNavigate();
 
   const pay_your_ticket = () => {
-    navigate("/payment");
-  };
+      navigate(`/payment/${_id}`);
+    };
+ 
 
   return (
     <>
@@ -16,15 +17,15 @@ const Ticket = ({ seates_zone, totalprice, bookingdate, user_fullname }) => {
         <Card style={{ width: "25rem", margin: "auto", marginBottom: "10px" }}>
           <Card.Body>
             <Card.Title>{seates_zone}</Card.Title>
+            <hr/>
             <Card.Text>
-              The name is :
+              Quantity in stock :
               <span style={{ textDecorationLine: "underline" }}>
-                {user_fullname}
+                {quantity}
               </span>
               <br />
-              The BookingDate is :{bookingdate}
               <br />
-              <span style={{ fontFamily: "impact" }}>{totalprice}</span>
+              <span style={{ fontFamily: "impact" }}>Price :{totalprice}DT</span>
             </Card.Text>
             <Button variant="primary" onClick={pay_your_ticket}>
               Pay Your Ticket

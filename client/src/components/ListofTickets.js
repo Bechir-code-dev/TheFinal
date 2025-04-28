@@ -1,14 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getting_all_tickets } from "../redux/actions";
 import Ticket from "./Ticket";
-import { Outlet, useLocation } from "react-router-dom";
 
 const ListofTickets = () => {
   const dispatch = useDispatch();
-  const location = useLocation();
-  const tickets = useSelector((state) => state.tickets);
-  const isonListofTickets = location.pathname === "/listoftickets";
+  const tickets = useSelector((state) => state.tickets)||[];
 
   useEffect(() => {
     dispatch(getting_all_tickets());
@@ -16,7 +13,7 @@ const ListofTickets = () => {
 
   return (
     <>
-      {isonListofTickets ? (
+      
         <div
           style={{
             backgroundImage:
@@ -28,15 +25,7 @@ const ListofTickets = () => {
             position: "relative",
           }}
         >
-          <div
-          // style={{
-          //   backgroundColor: "rgba(255, 255, 255, 0.85)",
-          //   padding: "30px",
-          //   borderRadius: "15px",
-          //   maxWidth: "1200px",
-          //   margin: "0 auto",
-          // }}
-          >
+          <div>
             <h1
               style={{
                 fontSize: "3em",
@@ -54,9 +43,6 @@ const ListofTickets = () => {
             <div
               style={{
                 display: "flex",
-                // gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-                // gap: "none",
-                // padding: "0 10px",
                 marginRight: "30px",
                 justifyContent: "space-around",
                 flexDirection: "row",
@@ -67,17 +53,9 @@ const ListofTickets = () => {
                 tickets.map((ticket) => (
                   <Ticket key={ticket._id} {...ticket} />
                 ))}
-
-              {/* {Array.isArray(tickets) &&
-              tickets.map((Element) => (
-                <Ticket key={Element._id} {...Element} />
-              ))} */}
             </div>
           </div>
         </div>
-      ) : (
-        <Outlet />
-      )}
     </>
   );
 };

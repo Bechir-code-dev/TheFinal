@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { logging_user } from "../redux/actions";
+import { logging_user, openSigninModal } from "../redux/actions";
 import Modal from "react-modal";
 import Button from "react-bootstrap/Button";
 
@@ -11,6 +11,8 @@ const customStyles = {
     left: "50%",
     right: "auto",
     bottom: "auto",
+    width: "30%",
+    height: "50%",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
   },
@@ -35,7 +37,7 @@ const Login = () => {
       password: newPassword,
     };
     dispatch(logging_user(user));
-    navigate("/listoftickets");
+    navigate("/events");
   };
 
   const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -56,12 +58,14 @@ const Login = () => {
         contentLabel="Example Modal"
       >
         <h2 style={{ textDecorationColor: "darkgrey" }}>LOG IN YOUR ACCOUNT</h2>
+        <hr />
         <form>
           <label>Your Email : </label>
           <input
             placeholder="example@example.com"
             type="email"
             value={newEmail}
+            style={{ marginLeft: "48px" }}
             onChange={(e) => setThenewEmail(e.target.value)}
             required
           />
@@ -72,6 +76,7 @@ const Login = () => {
             placeholder="Your password"
             type="password"
             value={newPassword}
+            style={{ marginLeft: "20px" }}
             onChange={(e) => setThenewPassword(e.target.value)}
             required
           />
@@ -81,9 +86,9 @@ const Login = () => {
             variant="success"
             type="submit"
             style={{
-              marginRight: "5px",
+              marginRight: "10px",
               borderRadius: "5px",
-              marginLeft: "70px",
+              marginLeft: "120px",
             }}
             onClick={log_in}
           >
@@ -95,6 +100,19 @@ const Login = () => {
             onClick={() => navigate(`/`)}
           >
             Cancel
+          </Button>
+          <p style={{ marginTop: "10px", textDecoration: "underline" }}>
+            If you don't have an account :
+          </p>
+          <Button
+            variant="secondary"
+            style={{ marginLeft: "160px" }}
+            onClick={() => {
+              dispatch(openSigninModal());
+              navigate("/");
+            }}
+          >
+            SignIn
           </Button>
         </form>
       </Modal>

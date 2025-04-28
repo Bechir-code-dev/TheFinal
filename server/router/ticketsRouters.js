@@ -5,10 +5,9 @@ const { Ticket } = require("../models/ticketsSchema");
 route.post("/addTicket", async (req, res) => {
   try {
     const newTicket = new Ticket({
-      user_fullname: req.body.user_fullname,
       seates_zone: req.body.seates_zone,
       totalprice: req.body.totalprice,
-      bookingdate: req.body.bookingdate,
+      quantity: req.body.quantity,
     });
     await newTicket.save();
     res.status(200).json({ newTicket });
@@ -16,14 +15,16 @@ route.post("/addTicket", async (req, res) => {
     res.status(400).json({ error });
   }
 });
-route.get("/Alltickets", async (req, res) => {
+
+route.get("/getAlltickets", async (req, res) => {
   try {
-    const tickets = await Ticket.find();
-    res.status(200).json({ tickets });
+    const Alltickets = await Ticket.find();
+    res.status(200).json({ Alltickets });
   } catch (error) {
     res.status(400).json({ error });
   }
 });
+
 route.get("/Oneticket/:id", async (req, res) => {
   try {
     const oneTicket = await Ticket.findById(req.params.id);
@@ -32,13 +33,13 @@ route.get("/Oneticket/:id", async (req, res) => {
     res.status(400).json({ error });
   }
 });
+
 route.put("/UpdatingTicket/:id", async (req, res) => {
   try {
     const thenewUp = {
-      user_fullname: req.body.user_fullname,
       seates_zone: req.body.seates_zone,
       totalprice: req.body.totalprice,
-      bookingdate: req.body.bookingdate,
+      quantity: req.body.quantity,
     };
     const UpdatedTicket = await Ticket.findByIdAndUpdate(
       req.params.id,
@@ -50,12 +51,14 @@ route.put("/UpdatingTicket/:id", async (req, res) => {
     res.status(400).json({ error });
   }
 });
-route.delete("/deleting/:id", async (req, res) => {
+
+route.delete("/deletingTicket/:id", async (req, res) => {
   try {
-    const deleted = await Ticket.findByIdAndDelete(req.params.id);
-    res.status(200).json({ deleted });
+    const deletedTicket = await Ticket.findByIdAndDelete(req.params.id);
+    res.status(200).json({ deletedTicket });
   } catch (error) {
     res.status(400).json({ error });
   }
 });
+
 module.exports = route;

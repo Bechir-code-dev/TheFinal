@@ -1,6 +1,6 @@
 const express = require("express");
 const route = express.Router();
-const { User } = require("../models/Schema");
+const { User } = require('../models/userSchema')
 const { auth } = require("../middleware/auth");
 var jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -56,7 +56,7 @@ route.post("/adduser", upload.single("image"), async (req, res) => {
       email: req.body.email,
       password: req.body.password,
       num: req.body.num,
-      // image :req.file? `/uploads/${req.file.filename}`: null
+      //image :req.file? `/uploads/${req.file.filename}`: null ,
       image: req.body.image,
       role: req.body.role,
     });
@@ -82,8 +82,8 @@ route.get("/auth", auth, (req, res) => {
 
 route.get("/getOneUser/:id", async (req, res) => {
   try {
-    const OneUser = await User.findById(req.params.id);
-    res.status(200).json({ OneUser });
+    const oneUser = await User.findById(req.params.id);
+    res.status(200).json({ oneUser });
   } catch (error) {
     res.status(400).json({ error });
   }
@@ -122,7 +122,7 @@ route.delete("/deleteUser/:id", async (req, res) => {
   }
 });
 
-route.put("/updateUser/:id", async (req, res) => {
+route.put("/updateUser/:id",upload.single('image'), async (req, res) => {
   try {
     const NewUpdated = {
       fullname: req.body.fullname,
@@ -130,11 +130,23 @@ route.put("/updateUser/:id", async (req, res) => {
       password: req.body.password,
       num: req.body.num,
       numCin: req.body.numCin,
+      image: req.file ? `/uploads/${req.file.filename}` : req.body.image,
     };
+
+    if (req.body.password) {
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+     NewUpdated.password = hashedPassword;
+    }
+
     const updateUser = await User.findByIdAndUpdate(req.params.id, NewUpdated, {
       new: true,
     });
-    res.status(200).json({ updateUser });
+    if (!updateUser) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    res.status(200).json({msg:'user updated successfully', updateUser });
   } catch (error) {
     res.status(400).json({ error });
   }

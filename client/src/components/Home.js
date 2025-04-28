@@ -8,7 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   adding_user,
   authorized,
+  closeSigninModal,
   log_out,
+  openSigninModal,
   uploadImage,
 } from "../redux/actions";
 import Button from "react-bootstrap/Button";
@@ -16,7 +18,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 const customStyles = {
   overlay: {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-    zIndex: 1000, 
+    zIndex: 1000,
   },
   content: {
     zIndex: 1001,
@@ -27,7 +29,7 @@ const customStyles = {
     marginRight: "-50%",
     transform: "translate(-50%, 0)",
     width: "50%",
-    position: "fixed", 
+    position: "fixed",
     padding: "2rem",
     backgroundColor: "white",
     borderRadius: "10px",
@@ -38,17 +40,18 @@ Modal.setAppElement("#root");
 
 const Home = () => {
   let subtitle;
-  const [modalIsOpen, setIsOpen] = React.useState(false);
-  const [theemail, setTheemail] = useState("");
-  const [thepassword, setThepassword] = useState("");
-  const [thefullname, setThefullname] = useState("");
-  const [thenum, setThenum] = useState("");
-  const [role, setRole] = useState("");
+  const modalIsOpen = useSelector((state) => state.isSigninModalOpen);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [num, setNum] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const user = useSelector((state) => state.users);
   const [showLogin, setShowLogin] = useState(false);
+  const image = useSelector((state) => state.image);
+  const [hideOneUser, setHideOneUser] = useState(false);
 
   const isOnHome = location.pathname === "/";
 
@@ -56,11 +59,11 @@ const Home = () => {
     dispatch(authorized());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
-    }
-  });
+  // useEffect(() => {
+  //   if (user) {
+  //     localStorage.setItem("user", JSON.stringify(user));
+  //   }
+  // });
 
   useEffect(() => {
     if (user && user.role === "admin") {
@@ -71,7 +74,7 @@ const Home = () => {
   }, [user]);
 
   function openModal() {
-    setIsOpen(true);
+    dispatch(openSigninModal());
   }
 
   function afterOpenModal() {
@@ -79,22 +82,31 @@ const Home = () => {
   }
 
   function closeModal() {
-    setIsOpen(false);
+    dispatch(closeSigninModal());
   }
-  function submit_user(e) {
+
+  const handleImageupload = (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("image", file);
+    dispatch(uploadImage(formData));
+  };
+
+  const newOne = {
+    email,
+    password,
+    num,
+    fullname,
+    image,
+  };
+
+  const submit_user = (e) => {
     e.preventDefault();
-    const newOne = {
-      email: theemail,
-      password: thepassword,
-      num: thenum,
-      fullname: thefullname,
-      image: image,
-      role: role,
-    };
+
     dispatch(adding_user(newOne));
+    navigate(`/ListOfUsers`);
     closeModal();
-    navigate("/listoftickets");
-  }
+  };
 
   const logging_out = () => {
     dispatch(log_out());
@@ -104,246 +116,212 @@ const Home = () => {
   const go_log = () => {
     navigate("/login");
   };
-  const image = useSelector((state) => state.image);
-  const handleimageupload = (e) => {
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append("image", file);
-    dispatch(uploadImage(formData));
-  };
 
   return (
     <>
       <Navbar
         expand="lg"
-        className="bg-body-tertiary"
-        style={{ height: "40px", marginTop: "auto" }}
+        bg="light"
+        variant="light"
         sticky="top"
+        className="shadow-sm py-3"
       >
         <Container>
-          <Link
-            to={"/"}
-            style={{ textDecoration: "underline", color: "black" }}
-          >
+          <Navbar.Brand as={Link} to="/" className="fw-bold fs-4">
             Matchday Tickets
-          </Link>
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Link
-                to={`/`}
-                style={{
-                  textDecoration: "none",
-                  padding: "10px",
-                  color: "green",
-                }}
-              >
-                Home
-              </Link>
+            <Nav className="me-auto gap-3">
               {showLogin && (
-                <Link
-                  to={`/ListOfUsers`}
-                  style={{
-                    textDecoration: "none",
-                    padding: "10px",
-                    color: "green",
-                  }}
-                >
-                  List Of Users
-                </Link>
+                <>
+                  <Nav.Link
+                    as={Link}
+                    to="/"
+                    className="text-success fw-semibold"
+                  >
+                    Home
+                  </Nav.Link>
+                  <Nav.Link
+                    as={Link}
+                    to="/ListOfUsers"
+                    className="text-success fw-semibold"
+                    onClick={() => setHideOneUser(true)}
+                  >
+                    List Of Users
+                  </Nav.Link>
+                  <Nav.Link
+                    as={Link}
+                    to="/events"
+                    className="text-success fw-semibold"
+                  >
+                    Events
+                  </Nav.Link>
+                  <Nav.Link
+                    as={Link}
+                    to="/listoftickets"
+                    className="text-success fw-semibold"
+                  >
+                    List of Tickets
+                  </Nav.Link>
+                  <Nav.Link
+                    as={Link}
+                    to="/addTicket"
+                    className="text-success fw-semibold"
+                  >
+                    Add Ticket
+                  </Nav.Link>
+                  <Nav.Link
+                    as={Link}
+                    to="/addUser"
+                    className="text-success fw-semibold"
+                  >
+                    Add User
+                  </Nav.Link>
+                  <Nav.Link
+                    as={Link}
+                    to="/add-event"
+                    className="text-success fw-semibold"
+                  >
+                    Add Event
+                  </Nav.Link>
+                </>
               )}
-              <Link
-                to={"/listoftickets"}
-                style={{
-                  textDecoration: "none",
-                  padding: "10px",
-                  color: "green",
-                }}
-              >
-                List of Tickets
-              </Link>
-              {showLogin && (
-                <Link
-                  to={"/addTicket"}
-                  style={{
-                    textDecoration: "none",
-                    padding: "10px",
-                    color: "green",
-                  }}
-                >
-                  Add Ticket
-                </Link>
+            </Nav>
+
+            <Nav className="align-items-center gap-3">
+              {user ? (
+                <>
+                  {!hideOneUser && (
+                    <span className="text-success fw-semibold">
+                      Welcome {user.fullname}
+                    </span>
+                  )}
+                  {!hideOneUser && (
+                    <Link to="/OneUser">
+                      <img
+                        src={user.image}
+                        alt="User"
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </Link>
+                  )}
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={logging_out}
+                  >
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    onClick={openModal}
+                  >
+                    Sign in
+                  </Button>
+                  <Button variant="outline-success" size="sm" onClick={go_log}>
+                    Login
+                  </Button>
+                </>
               )}
             </Nav>
           </Navbar.Collapse>
         </Container>
-        {/* {user && (
-          <span style={{ color: "black" }}> Welcome {user.fullname} </span>
-        )} */}
-        {user ? (
-          <>
-            <span style={{ color: "green", marginRight: "10px"}}>
-              Welcome {user.fullname} !
-            </span>
-            <button
-              onClick={logging_out}
-              style={{
-                borderRadius: "5px",
-                backgroundColor: "white",
-                marginLeft: "7px",
-                marginRight:'10px'
-              }}
-            >
-              LogOut
-            </button>
-            <Link to={`/OneUser`}>
-              <img
-                src={user.image}
-                alt="userImage"
-                style={{ borderRadius: "50%", marginRight:'10px' }}
-              />
-            </Link>
-          </>
-        ) : (
-          <>
-            <button
-              onClick={openModal}
-              style={{
-                borderRadius: "5px",
-                backgroundColor: "white",
-                margin: "auto",
-              }}
-            >
-              Sign in
-            </button>
-            <button
-              style={{
-                borderRadius: "5px",
-                backgroundColor: "white",
-                margin: "auto",
-              }}
-              onClick={go_log}
-            >
-              Login
-            </button>
-          </>
-        )}
       </Navbar>
 
       <Modal
-  isOpen={modalIsOpen}
-  onRequestClose={closeModal}
-  onAfterOpen={afterOpenModal}
-  style={customStyles}
-  // style={{ overlay: { backgroundColor: "rgba(0,0,0,0.5)" }, content: { padding: 0, border: "none", background: "none" }, height:"30%" }}
-  contentLabel="Sign In Modal"
->
-  {/* <motion.div
-    initial={{ y: -100, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    exit={{ y: -100, opacity: 0 }}
-    transition={{ duration: 0.5 }}
-    style={{
-      background: "white",
-      margin: "auto",
-      padding: "2rem",
-      borderRadius: "10px",
-      maxWidth: "500px",
-      boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
-    }}
-  > */}
-  <h1 ref={(_subtitle) => (subtitle = _subtitle)} style={{textAlign:'center'}}>Sign in</h1>
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        onAfterOpen={afterOpenModal}
+        style={customStyles}
+        contentLabel="Sign In Modal"
+      >
+        <h1
+          ref={(_subtitle) => (subtitle = _subtitle)}
+          style={{ textAlign: "center" }}
+        >
+          Sign in
+        </h1>
         <br />
         <form>
-        <label>Name </label>
+          <label>Name </label>
           <input
             placeholder="Your Name"
-            style={{ borderColor: "black", marginRight:'30px' }}
-            value={thefullname}
+            style={{ borderColor: "black", marginRight: "30px" }}
+            value={fullname}
             type="text"
-            onChange={(e) => setThefullname(e.target.value)}
+            onChange={(e) => setFullname(e.target.value)}
+            required
           />
           <label>E-mail </label>
           <input
             placeholder="Your E-mail"
             style={{ borderColor: "black" }}
-            value={theemail}
+            value={email}
             type="text"
-            onChange={(e) => setTheemail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
           <br />
           <br />
           <label>Password </label>
           <input
             placeholder="Your password"
-            style={{ borderColor: "black", marginRight:'30px' }}
-            value={thepassword}
+            style={{ borderColor: "black", marginRight: "30px" }}
+            value={password}
             type="password"
-            onChange={(e) => setThepassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
           <label>Phone Number </label>
           <input
             placeholder="Your PhoneNumber"
             style={{ borderColor: "black" }}
-            value={thenum}
+            value={num}
             type="number"
-            onChange={(e) => setThenum(e.target.value)}
+            onChange={(e) => setNum(e.target.value)}
+            required
           />
           <br />
+          <label>Your Photo :</label>
           <input
-            style={{ borderColor: "black", marginTop: "10px" }}
+            style={{
+              borderColor: "black",
+              marginTop: "10px",
+              marginLeft: "20px",
+            }}
             type="file"
-            onChange={handleimageupload}
+            onChange={handleImageupload}
+            required
           />
           <br />
-          {showLogin && (
-            <>
-              <label>Role</label>
-              <label>
-                <input
-                  style={{ marginLeft: "10px" }}
-                  type="radio"
-                  name="role"
-                  defaultChecked
-                />
-                Admin
-              </label>
-              <label>
-                <input
-                  style={{ marginLeft: "10px" }}
-                  type="radio"
-                  name="role"
-                />
-                User
-              </label>
-            </>
-          )}
-          {showLogin && (
-            <input
-              style={{ borderColor: "black" }}
-              value={role}
-              type="text"
-              onChange={(e) => setRole(e.target.value)}
-            />
-          )}
-</form>
-<Button
-          onClick={submit_user}
-          variant="outline-primary"
-          type="submit"
-          style={{ marginRight: "5px" , marginTop:'10px'}}
-        >
-          Submit
-        </Button>
-        <Button 
-        onClick={closeModal} variant="outline-danger"
-        style={{ marginRight: "5px" , marginTop:'10px'}}
-        >
-          Close
-        </Button>
 
-  {/* </motion.div> */}
-</Modal>
+          <Button
+            onClick={submit_user}
+            variant="outline-primary"
+            type="submit"
+            style={{ marginRight: "5px", marginTop: "10px" }}
+          >
+            Submit
+          </Button>
+          <Button
+            onClick={closeModal}
+            variant="outline-danger"
+            style={{ marginRight: "5px", marginTop: "10px" }}
+          >
+            Close
+          </Button>
+        </form>
+      </Modal>
 
       {isOnHome ? (
         <section
@@ -385,7 +363,7 @@ const Home = () => {
                 fontSize: "2.5rem",
                 fontWeight: "bold",
                 marginBottom: "1rem",
-                marginTop:"200px"
+                marginTop: "200px",
               }}
             >
               Experience the Event Like Never Before
@@ -430,16 +408,6 @@ const Home = () => {
       ) : (
         <Outlet />
       )}
-
-      {/* {isOnHome ? (
-        <img
-          style={{ width: "100%" }}
-          src="https://fr.reformsports.com/oachoata/2022/09/image-FEn7ype9G-transformed.jpeg"
-          alt="homeImage"
-        />
-      ) : (
-        <Outlet />
-      )} */}
     </>
   );
 };
