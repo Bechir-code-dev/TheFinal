@@ -51,7 +51,7 @@ const Home = () => {
   const user = useSelector((state) => state.users);
   const [showLogin, setShowLogin] = useState(false);
   const image = useSelector((state) => state.image);
-  const [hideOneUser, setHideOneUser] = useState(false);
+  // const [hideOneUser, setHideOneUser] = useState(false);
 
   const isOnHome = location.pathname === "/";
 
@@ -59,11 +59,7 @@ const Home = () => {
     dispatch(authorized());
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   if (user) {
-  //     localStorage.setItem("user", JSON.stringify(user));
-  //   }
-  // });
+
 
   useEffect(() => {
     if (user && user.role === "admin") {
@@ -104,7 +100,7 @@ const Home = () => {
     e.preventDefault();
 
     dispatch(adding_user(newOne));
-    navigate(`/ListOfUsers`);
+    navigate(`/events`);
     closeModal();
   };
 
@@ -119,125 +115,103 @@ const Home = () => {
 
   return (
     <>
-      <Navbar
-        expand="lg"
-        bg="light"
-        variant="light"
-        sticky="top"
-        className="shadow-sm py-3"
-      >
         <Container>
-          <Navbar.Brand as={Link} to="/" className="fw-bold fs-4">
-            Matchday Tickets
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto gap-3">
-              {showLogin && (
-                <>
-                  <Nav.Link
-                    as={Link}
-                    to="/"
-                    className="text-success fw-semibold"
-                  >
-                    Home
-                  </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/ListOfUsers"
-                    className="text-success fw-semibold"
-                    onClick={() => setHideOneUser(true)}
-                  >
-                    List Of Users
-                  </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/events"
-                    className="text-success fw-semibold"
-                  >
-                    Events
-                  </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/listoftickets"
-                    className="text-success fw-semibold"
-                  >
-                    List of Tickets
-                  </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/addTicket"
-                    className="text-success fw-semibold"
-                  >
-                    Add Ticket
-                  </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/addUser"
-                    className="text-success fw-semibold"
-                  >
-                    Add User
-                  </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/add-event"
-                    className="text-success fw-semibold"
-                  >
-                    Add Event
-                  </Nav.Link>
-                </>
-              )}
-            </Nav>
+<Navbar
+  expand="lg"
+  bg="light"
+  variant="light"
+  sticky="top"
+  className="shadow-sm py-3"
+>
+  <Container>
+    <Navbar.Brand as={Link} to="/" className="fw-bold fs-4">
+      Matchday Tickets
+    </Navbar.Brand>
+    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+    <Navbar.Collapse id="basic-navbar-nav">
+      <Nav className="me-auto gap-3">
+        {user && (
+          <>
+            <Nav.Link as={Link} to="/" className="text-success fw-semibold">
+              Home
+            </Nav.Link>
 
-            <Nav className="align-items-center gap-3">
-              {user ? (
-                <>
-                  {!hideOneUser && (
-                    <span className="text-success fw-semibold">
-                      Welcome {user.fullname}
-                    </span>
-                  )}
-                  {!hideOneUser && (
-                    <Link to="/OneUser">
-                      <img
-                        src={user.image}
-                        alt="User"
-                        style={{
-                          width: "40px",
-                          height: "40px",
-                          borderRadius: "50%",
-                          objectFit: "cover",
-                        }}
-                      />
-                    </Link>
-                  )}
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={logging_out}
-                  >
-                    Logout
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    onClick={openModal}
-                  >
-                    Sign in
-                  </Button>
-                  <Button variant="outline-success" size="sm" onClick={go_log}>
-                    Login
-                  </Button>
-                </>
-              )}
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+            <Nav.Link as={Link} to="/events" className="text-success fw-semibold">
+              Events
+            </Nav.Link>
 
+            <Nav.Link as={Link} to="/listoftickets" className="text-success fw-semibold">
+              List of Tickets
+            </Nav.Link>
+
+            <Nav.Link as={Link} to="/payment" className="text-success fw-semibold">
+              Payment
+            </Nav.Link>
+
+            {user.role === "admin" && (
+              <>
+                <Nav.Link as={Link} to="/ListOfUsers" className="text-success fw-semibold">
+                  List Of Users
+                </Nav.Link>
+                <Nav.Link as={Link} to="/addTicket" className="text-success fw-semibold">
+                  Add Ticket
+                </Nav.Link>
+                <Nav.Link as={Link} to="/addUser" className="text-success fw-semibold">
+                  Add User
+                </Nav.Link>
+                <Nav.Link as={Link} to="/add-event" className="text-success fw-semibold">
+                  Add Event
+                </Nav.Link>
+              </>
+            )}
+          </>
+        )}
+      </Nav>
+
+      <Nav className="align-items-center gap-3">
+        {user ? (
+          <>
+            <span className="text-success fw-semibold" style={{textDecorationLine:'underline'}}>Welcome {user.fullname}</span>
+            <Link to="/OneUser">
+              <img
+                src={user.image}
+                alt="User"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+            </Link>
+            <Button
+              variant="outline-danger"
+              size="sm"
+              onClick={logging_out}
+              style={{marginRight:'-90px'}}
+            >
+              Logout
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              variant="outline-primary"
+              size="sm"
+              onClick={openModal}
+            >
+              Sign in
+            </Button>
+            <Button variant="outline-success" size="sm" onClick={go_log}>
+              Login
+            </Button>
+          </>
+        )}
+      </Nav>
+    </Navbar.Collapse>
+    </Container>
+</Navbar>
+</Container>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
